@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/joking-project/static/css/main.3c9196da.css",
+    "main.js": "/joking-project/static/js/main.153a3f12.js",
+    "static/js/453.baf4c774.chunk.js": "/joking-project/static/js/453.baf4c774.chunk.js",
+    "index.html": "/joking-project/index.html",
+    "main.3c9196da.css.map": "/joking-project/static/css/main.3c9196da.css.map",
+    "main.153a3f12.js.map": "/joking-project/static/js/main.153a3f12.js.map",
+    "453.baf4c774.chunk.js.map": "/joking-project/static/js/453.baf4c774.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3c9196da.css",
+    "static/js/main.153a3f12.js"
+  ]
+}
