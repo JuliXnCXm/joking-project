@@ -1,0 +1,98 @@
+/* src/App.css */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 140px;
+  margin-top: 10%;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 600px;
+  width: 100%;
+}
+
+p {
+  color: #555;
+  font-size: 1rem;
+}
+
+div.chiste {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+div.chiste:last-child {
+  border-bottom: none;
+}
+
+strong {
+  font-size: 1.1rem;
+  color: #333;
+}
+
+label {
+  display: inline-block;
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #333;
+  cursor: pointer;
+}
+
+label input[type="radio"] {
+  margin-right: 8px;
+  accent-color: #4a90e2;
+  /* Color del botón redondo */
+}
+
+div.rating-options {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.rating-options label {
+  margin: 0;
+}
+
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #357ABD;
+}
+
+button[type="submit"]:focus {
+  outline: none;
+  background-color: #285E8E;
+}
+
+button[type="submit"]:active {
+  background-color: #204D72;
+}
