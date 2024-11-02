@@ -1,58 +1,93 @@
 // src/App.js
-import "./App.css"
-import React, { useState } from "react";
+import "./App.css";
+import React, { useEffect, useState } from "react";
+import { BACK_DEV_ALL_JOKES, BACK_DEV_INSERT_RATES } from "./api";
 
 const App = () => {
-  // Lista de chistes
-  const jokes = [
-    "¿Por qué los pájaros no usan Facebook? Porque ya tienen Twitter.",
-    "¿Cuál es el colmo de Aladino? Tener mal genio.",
-    "¿Por qué los pájaros vuelan hacia el sur? Porque caminando tardarían mucho.",
-    "¿Cuál es el animal más antiguo? La cebra, porque está en blanco y negro.",
-    "¿Por qué los esqueletos no pelean? Porque no tienen agallas.",
-    "¿Qué le dijo una impresora a otra? 'Esa copia es tuya'.",
-    "¿Por qué las focas miran siempre hacia arriba? Porque ahí están los focos.",
-    "¿Qué hace una abeja en el gimnasio? Zumba.",
-    "¿Por qué el libro de matemáticas estaba deprimido? Porque tenía muchos problemas.",
-    "¿Cuál es el colmo de un electricista? No encontrar corriente en su vida.",
-  ];
+  const [jokes, setJokes] = useState([]);
+  const [ratings, setRatings] = useState([]);
 
-  const [ratings, setRatings] = useState(
-    jokes.map(() => ({ humorEvidence: null, humorRating: null }))
-  );
+  useEffect(() => {
+    const fetchJokes = async () => {
+      console.log("Starting");
+      try {
+        const response = await fetch(BACK_DEV_ALL_JOKES);
+        if (response.status === 200) {
+          const data = await response.json();
+          setJokes(data);
+          setRatings(
+            data.map(() => ({ humorEvidence: null, humorRating: null }))
+          );
+        } else {
+          console.error("Error fetching jokes:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching jokes:", error);
+      }
+    };
 
-  // Manejar cambio en la evidencia de humor
+    fetchJokes();
+  }, []);
+
   const handleEvidenceChange = (index, value) => {
     const newRatings = [...ratings];
     newRatings[index].humorEvidence = value;
     if (value !== "1") {
-      newRatings[index].humorRating = null; // Limpiar rating si no hay humor
+      newRatings[index].humorRating = null; // Reset rating if no humor evidence
     }
     setRatings(newRatings);
   };
 
-  // Manejar cambio en la calificación de humor (solo si hay evidencia de humor)
   const handleRatingChange = (index, value) => {
     const newRatings = [...ratings];
     newRatings[index].humorRating = value;
     setRatings(newRatings);
   };
 
-  // Manejar envío del formulario
-  const handleSubmit = (event) => {
+  const handleSubmit = async  (event) => {
     event.preventDefault();
-    console.log("Datos enviados:", ratings);
-    alert("Datos guardados y enviados con éxito");
+
+    const structuredData = {
+      jokes: jokes.map((joke, index) => ({
+        _id: joke._id,
+        jokeText: joke.jokeText,
+        jokeHasHumor: ratings[index].humorEvidence === "1",
+        jokeRate: ratings[index].humorRating
+          ? Number(ratings[index].humorRating)
+          : 1,
+      })),
+    };
+    console.log("Datos enviados:", structuredData);
+    const res = await fetch(BACK_DEV_INSERT_RATES, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(structuredData),
+    })
+    if (!res.ok) {
+      console.error("Error al insertar las calificaciones:", await res.json());
+      return;
+    } else {
+        window.location.reload()
+    }
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}>
+    <div
+      style={{
+        padding: "20px",
+        maxWidth: "600px",
+        margin: "auto",
+        height: "100vh",
+      }}
+    >
       <h1>Calificación de Chistes</h1>
       <form onSubmit={handleSubmit}>
         {jokes.map((joke, index) => (
           <div key={index} style={{ marginBottom: "20px" }}>
             <p>
-              <strong>Chiste {index + 1}:</strong> {joke}
+              <strong>Chiste {index + 1}:</strong> {joke.jokeText}
             </p>
             <div>
               <label>
@@ -60,7 +95,7 @@ const App = () => {
                   type="radio"
                   name={`humorEvidence-${index}`}
                   value="1"
-                  checked={ratings[index].humorEvidence === "1"}
+                  checked={ratings[index]?.humorEvidence === "1"}
                   onChange={() => handleEvidenceChange(index, "1")}
                 />
                 Hay evidencia clara de humor
@@ -70,13 +105,13 @@ const App = () => {
                   type="radio"
                   name={`humorEvidence-${index}`}
                   value="2"
-                  checked={ratings[index].humorEvidence === "2"}
+                  checked={ratings[index]?.humorEvidence === "2"}
                   onChange={() => handleEvidenceChange(index, "2")}
                 />
                 No hay evidencia clara de humor
               </label>
             </div>
-            {ratings[index].humorEvidence === "1" && (
+            {ratings[index]?.humorEvidence === "1" && (
               <div style={{ marginTop: "10px" }}>
                 <p>Califica el nivel de humor (1 - 5):</p>
                 {[1, 2, 3, 4, 5].map((score) => (
@@ -85,7 +120,7 @@ const App = () => {
                       type="radio"
                       name={`humorRating-${index}`}
                       value={score}
-                      checked={ratings[index].humorRating === String(score)}
+                      checked={ratings[index]?.humorRating === String(score)}
                       onChange={() => handleRatingChange(index, String(score))}
                     />
                     {score}
